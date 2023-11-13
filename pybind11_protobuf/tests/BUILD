@@ -17,6 +17,12 @@ py_library(
     deps = ["@com_google_protobuf//:protobuf_python"],
 )
 
+
+
+
+
+
+
 proto_library(
     name = "test_proto",
     srcs = ["test.proto"],
@@ -32,7 +38,11 @@ py_proto_library(
     deps = [":test_proto"],
 )
 
-# Tests for native_proto_caster
+
+
+
+
+
 
 
 pybind_extension(
@@ -44,6 +54,11 @@ pybind_extension(
         "@com_google_protobuf//:protobuf",
     ],
 )
+
+
+
+
+
 
 py_test(
     name = "message_test",
