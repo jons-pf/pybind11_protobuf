@@ -24,34 +24,6 @@ using pybind11::test::TestMessage;
 PYBIND11_MODULE(message_module, m) {
   pybind11_protobuf::ImportNativeProtoCasters();
 
-  m.attr("TEXT_FORMAT_MESSAGE") = R"(string_value: "test"
-int_value: 4
-int_message {
-  value: 5
-}
-repeated_int_value: 6
-repeated_int_value: 7
-repeated_int_message {
-  value: 8
-}
-string_int_map {
-  key: "k"
-  value: 5
-}
-int_message_map {
-  key: 1
-  value {
-    value: 6
-  }
-}
-enum_value: ONE
-repeated_enum_value: TWO
-double_value: 4.5
-nested {
-  value: 5
-}
-)";
-
   m.def(
       "make_test_message",
       [](std::string text) -> TestMessage {

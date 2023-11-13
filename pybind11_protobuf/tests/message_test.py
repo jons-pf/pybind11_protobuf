@@ -15,21 +15,50 @@ import re
 from absl.testing import absltest
 from absl.testing import parameterized
 
-from google.protobuf import any_pb2
-from pybind11_protobuf.tests import compare
-from pybind11_protobuf.tests import message_module as m
-from pybind11_protobuf.tests import test_pb2
 from google.protobuf import text_format
+from google.protobuf import any_pb2
 
+from pybind11_protobuf.tests import compare
+from pybind11_protobuf.tests import test_pb2
+
+from pybind11_protobuf.tests import message_module as m
+
+TEXT_FORMAT_MESSAGE = """string_value: "test"
+int_value: 4
+int_message {
+  value: 5
+}
+repeated_int_value: 6
+repeated_int_value: 7
+repeated_int_message {
+  value: 8
+}
+string_int_map {
+  key: "k"
+  value: 5
+}
+int_message_map {
+  key: 1
+  value {
+    value: 6
+  }
+}
+enum_value: ONE
+repeated_enum_value: TWO
+double_value: 4.5
+nested {
+  value: 5
+}
+"""
 
 def get_py_message():
   """Returns a native TestMessage with all fields set."""
-  return text_format.Parse(m.TEXT_FORMAT_MESSAGE, test_pb2.TestMessage())
+  return text_format.Parse(TEXT_FORMAT_MESSAGE, test_pb2.TestMessage())
 
 
 def get_cpp_message():
   """Returns a wrapped TestMessage with all fields set."""
-  return m.make_test_message(m.TEXT_FORMAT_MESSAGE)
+  return m.make_test_message(TEXT_FORMAT_MESSAGE)
 
 
 def remove_ws(text):
@@ -432,23 +461,23 @@ class MessageTest(parameterized.TestCase, compare.ProtoAssertions):
 
   def test_text_format_to_string(self):
     self.assertMultiLineEqual(
-        text_format.MessageToString(get_cpp_message()), m.TEXT_FORMAT_MESSAGE)
+        text_format.MessageToString(get_cpp_message()), TEXT_FORMAT_MESSAGE)
 
   def test_text_format_parse(self):
-    message = text_format.Parse(m.TEXT_FORMAT_MESSAGE, m.make_test_message())
+    message = text_format.Parse(TEXT_FORMAT_MESSAGE, m.make_test_message())
     self.assertMultiLineEqual(
-        text_format.MessageToString(message), m.TEXT_FORMAT_MESSAGE
+        text_format.MessageToString(message), TEXT_FORMAT_MESSAGE
     )
 
   def test_text_format_merge(self):
-    message = text_format.Merge(m.TEXT_FORMAT_MESSAGE, m.make_test_message())
+    message = text_format.Merge(TEXT_FORMAT_MESSAGE, m.make_test_message())
     self.assertMultiLineEqual(
-        text_format.MessageToString(message), m.TEXT_FORMAT_MESSAGE
+        text_format.MessageToString(message), TEXT_FORMAT_MESSAGE
     )
 
   def test_proto_2_equal(self):
-    self.assertProtoEqual(m.TEXT_FORMAT_MESSAGE,
-                          m.make_test_message(m.TEXT_FORMAT_MESSAGE))
+    self.assertProtoEqual(TEXT_FORMAT_MESSAGE,
+                          m.make_test_message(TEXT_FORMAT_MESSAGE))
 
   def test_byte_size_clear(self):
     message = get_cpp_message()
@@ -470,10 +499,10 @@ class MessageTest(parameterized.TestCase, compare.ProtoAssertions):
   )
   def test_serialize_and_parse(self, kwargs):
     text = m.make_test_message(
-        m.TEXT_FORMAT_MESSAGE).SerializeToString(**kwargs)
+        TEXT_FORMAT_MESSAGE).SerializeToString(**kwargs)
     message_copy = m.make_test_message()
     message_copy.ParseFromString(text)
-    self.assertProtoEqual(m.TEXT_FORMAT_MESSAGE, message_copy)
+    self.assertProtoEqual(TEXT_FORMAT_MESSAGE, message_copy)
 
   @parameterized.named_parameters(  #
       ('no_kwargs', {}),  #
@@ -486,10 +515,10 @@ class MessageTest(parameterized.TestCase, compare.ProtoAssertions):
   )
   def test_serialize_partial_and_merge(self, kwargs):
     text = m.make_test_message(
-        m.TEXT_FORMAT_MESSAGE).SerializePartialToString(**kwargs)
+        TEXT_FORMAT_MESSAGE).SerializePartialToString(**kwargs)
     message_copy = m.make_test_message()
     message_copy.MergeFromString(text)
-    self.assertProtoEqual(m.TEXT_FORMAT_MESSAGE, message_copy)
+    self.assertProtoEqual(TEXT_FORMAT_MESSAGE, message_copy)
 
   @parameterized.named_parameters(
       ('native_to_native', get_py_message, test_pb2.TestMessage),
@@ -501,7 +530,7 @@ class MessageTest(parameterized.TestCase, compare.ProtoAssertions):
     source = a()
     dest = b()
     dest.CopyFrom(source)
-    self.assertProtoEqual(m.TEXT_FORMAT_MESSAGE, dest)
+    self.assertProtoEqual(TEXT_FORMAT_MESSAGE, dest)
 
   @parameterized.named_parameters(
       ('native_to_native', get_py_message, test_pb2.TestMessage),
@@ -513,7 +542,7 @@ class MessageTest(parameterized.TestCase, compare.ProtoAssertions):
     source = a()
     dest = b()
     dest.MergeFrom(source)
-    self.assertProtoEqual(m.TEXT_FORMAT_MESSAGE, dest)
+    self.assertProtoEqual(TEXT_FORMAT_MESSAGE, dest)
 
   @parameterized.named_parameters(
       ('string', 'a string'),
