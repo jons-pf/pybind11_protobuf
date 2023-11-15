@@ -6,6 +6,7 @@
 #include <pybind11/pybind11.h>
 
 #include <functional>
+#include <cmath>
 #include <memory>
 #include <stdexcept>
 
@@ -19,52 +20,33 @@ namespace py = ::pybind11;
 
 namespace {
 
-using pybind11::test::IntMessage;
-using pybind11::test::IntAnswer;
-using pybind11::test::TestMessage;
+using pybind11::test::Inputs;
+using pybind11::test::Outputs;
+
+Outputs evaluate_profile(const Inputs &inputs) {
+
+  const double center = inputs.center();
+  const double sigma = inputs.sigma();
+  const double intensity = inputs.intensity();
+
+  Outputs out;
+
+  for (const double x: inputs.evaluation_locations()) {
+    const double dx = x - center;
+    const double value = intensity * std::exp(- dx * dx / (2.0 * sigma * sigma));
+    out.add_profile(value);
+  }
+
+  return out;
+}
 
 PYBIND11_MODULE(message_module, m) {
   pybind11_protobuf::ImportNativeProtoCasters();
 
   m.def(
-      "make_test_message",
-      [](std::string text) -> TestMessage {
-        TestMessage msg;
-        if (!text.empty() && !::google::protobuf::TextFormat::ParseFromString(text, &msg)) {
-          throw py::value_error("Failed to parse text format TestMessage");
-        }
-        return msg;
-      },
-      py::arg("text") = "");
-
-  m.def(
-      "make_int_message",
-      [](int value) -> IntMessage {
-        IntMessage msg;
-        msg.set_value(value);
-        return msg;
-      },
-      py::arg("value") = 123);
-
-  m.def(
-      "make_nested_message",
-      [](int value) -> TestMessage::Nested {
-        TestMessage::Nested msg;
-        msg.set_value(value);
-        return msg;
-      },
-      py::arg("value") = 123);
-
-
-
-  m.def(
-      "perform_int_operation",
-      [](IntMessage msg) -> IntAnswer {
-        IntAnswer ans;
-        ans.set_answer(msg.value() * msg.value());
-        return ans;
-      },
-      py::arg("msg") = nullptr);
+      "evaluate_profile",
+      evaluate_profile,
+      py::arg("inputs") = nullptr);
 }
 
 }  // namespace
