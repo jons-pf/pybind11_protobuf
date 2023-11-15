@@ -84,7 +84,12 @@ if __name__ == '__main__':
 
   print(message)
 
+  msg2 = m.make_int_message(42)
+  print(msg2)
 
+
+  ans = m.perform_int_operation(msg2)
+  print(42*42, ans)
 
 
 

@@ -14,6 +14,12 @@ message IntMessage {
   int32 value = 1;
 }
 
+
+message IntAnswer {
+  int32 answer = 1;
+}
+
+
 message TestMessage {
   enum TestEnum {
     ZERO = 0;
@@ -42,12 +48,4 @@ message TestMessage {
     int32 value = 1;
   }
   Nested nested = 13;
-}
-
-message AnotherMessage {
-  enum AnotherEnum {
-    ZERO = 0;
-    ONE = 11;
-    TWO = 22;
-  }
 }

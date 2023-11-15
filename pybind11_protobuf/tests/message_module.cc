@@ -20,6 +20,7 @@ namespace py = ::pybind11;
 namespace {
 
 using pybind11::test::IntMessage;
+using pybind11::test::IntAnswer;
 using pybind11::test::TestMessage;
 
 PYBIND11_MODULE(message_module, m) {
@@ -53,6 +54,17 @@ PYBIND11_MODULE(message_module, m) {
         return msg;
       },
       py::arg("value") = 123);
+
+
+
+  m.def(
+      "perform_int_operation",
+      [](IntMessage msg) -> IntAnswer {
+        IntAnswer ans;
+        ans.set_answer(msg.value() * msg.value());
+        return ans;
+      },
+      py::arg("msg") = nullptr);
 }
 
 }  // namespace
