@@ -12,7 +12,8 @@
 #include "google/protobuf/message.h"
 #include "google/protobuf/text_format.h"
 #include "pybind11_protobuf/native_proto_caster.h"
-#include "pybind11_protobuf/tests/test.pb.h"
+
+#include "pybind11_protobuf/tests/vmec_inputs.pb.h"
 
 namespace py = ::pybind11;
 

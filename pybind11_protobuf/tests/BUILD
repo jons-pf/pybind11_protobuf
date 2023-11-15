@@ -24,18 +24,18 @@ py_library(
 
 
 proto_library(
-    name = "test_proto",
-    srcs = ["test.proto"],
+    name = "vmec_inputs_proto",
+    srcs = ["vmec_inputs.proto"],
 )
 
 cc_proto_library(
-    name = "test_cc_proto",
-    deps = [":test_proto"],
+    name = "vmec_inputs_cc_proto",
+    deps = [":vmec_inputs_proto"],
 )
 
 py_proto_library(
-    name = "test_py_pb2",
-    deps = [":test_proto"],
+    name = "vmec_inputs_py_pb2",
+    deps = [":vmec_inputs_proto"],
 )
 
 
@@ -49,7 +49,7 @@ pybind_extension(
     name = "message_module",
     srcs = ["message_module.cc"],
     deps = [
-        ":test_cc_proto",
+        ":vmec_inputs_cc_proto",
         "//pybind11_protobuf:native_proto_caster",
         "@com_google_protobuf//:protobuf",
     ],
@@ -70,7 +70,7 @@ py_test(
     srcs_version = "PY3",
     deps = [
         ":compare",
-        ":test_py_pb2",
+        ":vmec_inputs_py_pb2",
         "@com_google_absl_py//absl/testing:absltest",
         "@com_google_absl_py//absl/testing:parameterized",
         "@com_google_protobuf//:protobuf_python",

@@ -25,6 +25,7 @@ message TestMessage {
   int32 int_value = 2;
   double double_value = 10;
   IntMessage int_message = 3;
+
   repeated int32 repeated_int_value = 4;
   repeated IntMessage repeated_int_message = 5;
   map<string, int32> string_int_map = 6;
